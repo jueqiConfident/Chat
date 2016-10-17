@@ -1,6 +1,9 @@
 package client;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.Socket;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -12,21 +15,27 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class ChatPanel extends JFrame{
 	
-	public ChatPanel(String name){
-		super(name);
+	public ChatPanel(Socket so){
+		super("聊天室");
+		this.so = so;
 		this.createChatPanel();
+		
 	}
-	private JPanel jPanel1;
-	private JPanel jPanel2;
-	private JPanel jPanel3;
+	private Socket so;
+	private JPanel jPanel1;//chat panel
+	private JPanel jPanel2;//client panel
+	private JPanel jPanel3;//send panel
 	
-	private JTextArea jTextArea1;
-	private JTextArea jTextArea2;
+	public JTextArea jTextArea1;//聊天消息
+	private JTextArea jTextArea2;//用户列表
 	
-	private JTextField jTextField;
+	private JTextField jTextField;//消息编辑
 	
-	private JButton jButton1;
-	private JButton jButton2;
+	private JButton jButton1;//send
+	private JButton jButton2;//clear
+	
+	
+	
 	
 	public void createChatPanel(){
 		jTextArea1 = new JTextArea();
@@ -42,6 +51,15 @@ public class ChatPanel extends JFrame{
 		jTextField = new JTextField(30);
 		
 		jButton1 = new JButton("发送");
+		jButton1.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				new ClientOutputThread(so,jTextField.getText()).start();
+			}
+			
+		});
 		jButton2 = new JButton("清屏");
 		
 		jPanel3 = new JPanel();

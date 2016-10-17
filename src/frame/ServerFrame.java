@@ -4,6 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -17,10 +21,16 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class ServerFrame extends JFrame{
 	
-	public ServerFrame(String name){
+	public ServerFrame(String name) {
 		super(name);
 		this.createFrame();
+		map = new HashMap<String,Socket>();
 	}
+	Map<String,Socket> map;
+
+	public ServerSocket ss;
+	public Socket socket;
+	
 	
 	private String serverKey = "启动服务器";//button1 文本
 	private String serverStatus = "停止"; //jLabel2文本
@@ -36,8 +46,8 @@ public class ServerFrame extends JFrame{
 	
 	private JScrollPane jScrollPane;
 	
-	private JTextField jTextField;//端口号文本框
-	private JTextArea jTextArea;//用户列表文本框
+	JTextField jTextField;//端口号文本框
+	 JTextArea jTextArea;//用户列表文本框
 	
 	public void createFrame(){
 		
@@ -57,6 +67,7 @@ public class ServerFrame extends JFrame{
 				if("启动服务器".equals(serverKey)){
 					serverKey = "停止服务器";
 					serverStatus = "运行";
+					
 				}
 				else{
 					serverKey = "启动服务器";
@@ -65,6 +76,9 @@ public class ServerFrame extends JFrame{
 				jLabel2.setText(serverStatus);
 				jButton1.setText(serverKey);
 				
+				new MainThread(ServerFrame.this).start();
+				
+			
 			}
 			
 		});
@@ -72,6 +86,7 @@ public class ServerFrame extends JFrame{
 		jScrollPane = new JScrollPane();
 		
 		jTextField = new JTextField(10);//文本框的长度
+		jTextField.setText("5000");
 		jTextArea = new JTextArea();
 		jTextArea.setEditable(false);//文本框不可以编辑
 		jTextArea.setForeground(new Color(245,0,0));//文本的颜色
@@ -97,10 +112,47 @@ public class ServerFrame extends JFrame{
 		this.setResizable(false);//不可娈窗口尺寸
 		this.pack();//正好大小
 		this.setVisible(true);
-		
-		
 	}
-	public static void main(String[] args) {
+	
+
+	
+//	public void receiveSend() throws Exception{
+//		ss = new ServerSocket(Integer.parseInt(jTextField.getText()));
+//		while(true){
+//			
+//			new ReceiveThread(ss,map).start();
+//		}
+//		
+//		
+///*		while(true){
+//			socket = ss.accept();
+//			InputStream is = socket.getInputStream();
+//			byte [] b = new byte[200];
+//			int length = 0 ;
+//			int i = 0 ;//记数传了多少个
+//			while(-1 != (length = is.read(b, 0, b.length))){
+//				
+//				String str = new String(b,0,length);
+//				if(i == 0){
+//					xml.clientName.setText(str);
+//				}
+//				if(i == 1){
+//					xml.message.setText(str);
+//				}
+//				if(i >= 2){
+//					xml.IP.setText(str);
+//				}
+//				i++;
+//			} 
+//			System.out.println("savexml");
+//			xml.saveXML("serverXML.xml");
+//			
+//		}
+//		*/
+//		
+//	}
+	
+	public static void main(String[] args) throws Exception {
 		 new ServerFrame("服务器");
 		
 	}
